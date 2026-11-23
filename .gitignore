@@ -1,0 +1,13 @@
+# Build output
+build/
+
+# Compiler artifacts
+*.o
+*.obj
+*.exe
+
+# Generated files
+compile_commands.json
+
+# Caches
+.cache/
