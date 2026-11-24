@@ -1,35 +1,35 @@
 #include "app.h"
 #include "fp_controller.h"
-#include "map.h"
+
+#include "map/mapgen.h"
+#include "map/render.h"
 
 #include <raylib.h>
+#include <raymath.h>
 #include <stdio.h>
 
 #define WINDOW_W 1200
 #define WINDOW_H 800
 #define FPS 120
 
+#define MODEL_SCALE 10.0f
+
 static void app_update(App *a);
 static void app_render(App *a);
 
-static void generate_map(App *a);
-
-Model model;
-Texture2D colormap;
+Map *map;
 
 void app_init(App *a) {
+	SetTraceLogLevel(LOG_ERROR);
+
 	InitWindow(WINDOW_W, WINDOW_H, "app");
 	SetTargetFPS(FPS);
 
 	fp_controller_init(&a->fpc);
 
-	a->map = map_load_from_file("data/map.txt");
-
 	DisableCursor();
 
-	model = LoadModel("assets/kenney_city/Models/GLB format/building-f.glb");
-	colormap = LoadTexture("assets/kenney_city/Models/GLB format/Textures/colormap.png");
-	SetMaterialTexture(&model.materials[0], MATERIAL_MAP_ALBEDO, colormap);
+	map = mapgen(30, 1);
 }
 
 void app_run(App *a) {
@@ -40,9 +40,7 @@ void app_run(App *a) {
 }
 
 void app_quit(App *a) {
-	map_free(a->map);
-	UnloadModel(model);
-	UnloadTexture(colormap);
+	map_free(map);
 
 	CloseWindow();
 }
@@ -50,7 +48,7 @@ void app_quit(App *a) {
 // In-app functions
 
 static void app_update(App *a) {
-	fp_controller_update(&a->fpc, a->map);
+	fp_controller_update(&a->fpc);
 }
 
 static void app_render(App *a) {
@@ -60,12 +58,9 @@ static void app_render(App *a) {
 
 	BeginMode3D(a->fpc.cam);
 
-	DrawPlane((Vector3){0, -0.5f, 0}, (Vector2){20, 20}, LIGHTGRAY);
 	DrawGrid(2000, 1);
 
-	// generate_map(a);
-
-	DrawModel(model, (Vector3){ 0, 0, 0 }, 10.0f, WHITE);
+	map_render((Vector3){ 0, 0, 0}, map);
 
 	EndMode3D();
 
@@ -76,21 +71,4 @@ static void app_render(App *a) {
 	);
 
 	EndDrawing();
-}
-
-static void generate_map(App *a) {
-	size_t map_ptr = 0;
-
-	while (map_ptr < a->map->map_size) {
-		float h = (float)a->map->data[map_ptr];
-
-		int x = map_ptr % a->map->map_row_size;
-
-		if (h != 0) {
-			DrawCube((Vector3){ x, h/2, map_ptr / a->map->map_row_size }, 1, h, 1, RED);
-			DrawCubeWires((Vector3){ x, h/2, map_ptr / a->map->map_row_size }, 1, h, 1, BLACK);
-		}
-
-		map_ptr++;
-	}
 }

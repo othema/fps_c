@@ -1,7 +1,9 @@
 CC = gcc
 CFLAGS = -Wall -Wextra -Iinclude -Ivendor -O2
 
-SRC = $(wildcard src/*.c)
+# Recursive wildcard for nested directories
+rwildcard = $(foreach d,$(wildcard $(1:=/*)),$(call rwildcard,$d,$2) $(filter $(subst *,%,$2),$d))
+SRC = $(call rwildcard,src,*.c)
 
 LIBS = $(shell pkg-config --libs raylib) -lm
 

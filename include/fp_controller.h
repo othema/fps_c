@@ -1,7 +1,5 @@
 #pragma once
 
-#include "map.h"
-
 #include <raylib.h>
 
 #define MOVEMENT_ACCEL 60.0f
@@ -24,4 +22,4 @@ typedef struct {
 } FPController;
 
 void fp_controller_init(FPController *fpc);
-void fp_controller_update(FPController *fpc, Map *map);
+void fp_controller_update(FPController *fpc);

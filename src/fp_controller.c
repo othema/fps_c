@@ -1,18 +1,17 @@
 #include "fp_controller.h"
-#include "map.h"
 
 #include <math.h>
 #include <raylib.h>
 #include <raymath.h>
 #include <stdio.h>
 
-static void fpc_move(FPController *fpc, Map *map);
+static void fpc_move(FPController *fpc);
 static void fpc_rotate(FPController *fpc);
 
 static void fpc_move_xz(FPController *fpc, float *dt);
-static void fpc_move_y(FPController *fpc, Map *map, float *dt);
+static void fpc_move_y(FPController *fpc, float *dt);
 
-static char get_map_height(FPController *fpc, Map *map);
+static char get_map_height(FPController *fpc);
 static inline float get_feet_height(FPController *fpc);
 
 void fp_controller_init(FPController *fpc) {
@@ -37,16 +36,16 @@ void fp_controller_init(FPController *fpc) {
 	UpdateCamera(&fpc->cam, CAMERA_CUSTOM);
 }
 
-void fp_controller_update(FPController *fpc, Map *map) {
-	fpc_move(fpc, map);
+void fp_controller_update(FPController *fpc) {
+	fpc_move(fpc);
 	fpc_rotate(fpc);
 }
 
-static void fpc_move(FPController *fpc, Map *map) {
+static void fpc_move(FPController *fpc) {
 	float dt = GetFrameTime();
 
 	fpc_move_xz(fpc, &dt);
-	fpc_move_y(fpc, map, &dt);
+	fpc_move_y(fpc, &dt);
 }
 
 static void fpc_move_xz(FPController *fpc, float *dt) {
@@ -81,12 +80,12 @@ static void fpc_move_xz(FPController *fpc, float *dt) {
 	fpc->vel.z *= decay;
 }
 
-static void fpc_move_y(FPController *fpc, Map *map, float *dt) {
+static void fpc_move_y(FPController *fpc, float *dt) {
 	// Update position
 	fpc->cam.position.y += fpc->vel.y * *dt;
 
-	char floor_height = get_map_height(fpc, map);
-	printf("%d\n", floor_height);
+	// char floor_height = get_map_height(fpc, map);
+	char floor_height = 0;
 
 	// Apply gravity
 	if (get_feet_height(fpc) > floor_height) {  // -0 being floor height
@@ -119,18 +118,18 @@ static void fpc_rotate(FPController *fpc) {
 	fpc->cam.target = Vector3Add(fpc->cam.position, forward);
 }
 
-// Get height of block player is standing on
-static char get_map_height(FPController *fpc, Map *map) {
-	int x = roundf(fpc->cam.position.x);
-	int z = roundf(fpc->cam.position.z);
+// // Get height of block player is standing on
+// static char get_map_height(FPController *fpc, Map *map) {
+// 	int x = roundf(fpc->cam.position.x);
+// 	int z = roundf(fpc->cam.position.z);
 
-	if (x < 0 || z < 0) return 0;
+// 	if (x < 0 || z < 0) return 0;
 
-	// Assume a map data point is 1x1x1 block in game
-	size_t idx = z * map->map_row_size + x;
+// 	// Assume a map data point is 1x1x1 block in game
+// 	size_t idx = z * map->map_row_size + x;
 
-	return map->data[idx];
-}
+// 	return map->data[idx];
+// }
 
 static inline float get_feet_height(FPController *fpc) {
 	return fpc->cam.position.y - fpc->hitbox.y;
