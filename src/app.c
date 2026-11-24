@@ -46,7 +46,8 @@ static void app_render(App *a) {
 
 	BeginMode3D(a->fpc.cam);
 
-	DrawPlane((Vector3){0, -0.5f, 0}, (Vector2){10, 10}, LIGHTGRAY);
+	DrawPlane((Vector3){0, -0.5f, 0}, (Vector2){20, 20}, LIGHTGRAY);
+	DrawGrid(20, 1);
 	DrawCube((Vector3){ 0, 0, 0 }, 1, 1, 1, RED);
 
 	EndMode3D();
