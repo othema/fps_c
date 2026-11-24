@@ -3,7 +3,7 @@ CFLAGS = -Wall -Wextra -Iinclude -Ivendor -O2
 
 SRC = $(wildcard src/*.c)
 
-LIBS = $(shell pkg-config --libs raylib)
+LIBS = $(shell pkg-config --libs raylib) -lm
 
 TARGET = build/app
 

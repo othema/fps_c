@@ -1,4 +1,5 @@
 #include "app.h"
+#include "fp_controller.h"
 
 #include <raylib.h>
 #include <stdio.h>
@@ -7,52 +8,59 @@
 #define WINDOW_H 600
 #define FPS 60
 
-void app_init(Game *g) {
+static void app_update(App *a);
+static void app_render(App *a);
+
+void app_init(App *a) {
 	InitWindow(WINDOW_W, WINDOW_H, "app");
 	SetTargetFPS(FPS);
+
+	fp_controller_init(&a->fpc);
+
+	DisableCursor();
 }
 
-void app_run(Game *g) {
+void app_run(App *a) {
 	while (!WindowShouldClose()) {
-		BeginDrawing();
-
-		ClearBackground(BLACK);
-
-		EndDrawing();
+		app_update(a);
+		app_render(a);
 	}
 }
 
-void app_quit(Game *g) {
+void app_quit(App *a) {
 	CloseWindow();
 }
 
-// int main(void) {
-	
+// In-app functions
 
-// 	Game g;
+static void app_update(App *a) {
+	fp_controller_update(&a->fpc);
+}
 
-// 	// Camera setup
-// 	g.cam = (Camera3D){ 0 };
-// 	g.cam.position = (Vector3){ 0.0f, 2.0f, 10.0f };
-// 	g.cam.target = (Vector3){ 0.0f, 0.0f, 0.0f };
-// 	g.cam.up = (Vector3){ 0.0f, 1.0f, 0.0f };
-// 	g.cam.fovy = 45.0f;
-// 	g.cam.projection = CAMERA_PERSPECTIVE;
+static void app_render(App *a) {
+	BeginDrawing();
 
-// 	DisableCursor();
+	ClearBackground(WHITE);
 
-// 	while (!WindowShouldClose()) {
-// 		update(&g);
-// 		render(&g);
-// 	}
+	DrawText("app", 10, 10, 20, BLACK);
 
-// 	CloseWindow();
+	BeginMode3D(a->fpc.cam);
 
-// 	return 0;
-// }
+	DrawPlane((Vector3){0, -0.5f, 0}, (Vector2){10, 10}, LIGHTGRAY);
+	DrawCube((Vector3){ 0, 0, 0 }, 1, 1, 1, RED);
+
+	EndMode3D();
+
+	DrawText(
+		TextFormat("x,y,z: (%f, %f, %f)", a->fpc.cam.position.x, a->fpc.cam.position.y, a->fpc.cam.position.z),
+		10, 10, 20, BLACK
+	);
+	EndDrawing();
+}
+
 
 // void update(Game *g) {
-// 	UpdateCamera(&g->cam, CAMERA_FIRST_PERSON);
+// 	UpdateCamera(&a->cam, CAMERA_FIRST_PERSON);
 // }
 
 // void render(Game *g) {
@@ -61,7 +69,7 @@ void app_quit(Game *g) {
 // 	ClearBackground(WHITE);
 
 // 	// ----- 3D rendering -----
-// 	BeginMode3D(g->cam);
+// 	BeginMode3D(a->cam);
 
 // 	DrawPlane((Vector3){ 0, -1, 0 }, (Vector2){ 10, 10 }, LIGHTGRAY);
 

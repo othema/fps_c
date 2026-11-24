@@ -1,9 +1,13 @@
+#pragma once
+
+#include "fp_controller.h"
+
 #include <raylib.h>
 
 typedef struct {
-	Camera3D cam;
-} Game;
+	FPController fpc;
+} App;
 
-void app_init(Game *g);
-void app_run(Game *g);
-void app_quit(Game *g);
+void app_init(App *a);
+void app_run(App *a);
+void app_quit(App *a);

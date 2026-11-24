@@ -1,7 +1,7 @@
 #include "app.h"
 
 int main(void) {
-	Game game;
+	App game;
 
 	app_init(&game);
 	app_run(&game);
