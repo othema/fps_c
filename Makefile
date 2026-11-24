@@ -16,5 +16,13 @@ all:
 run: all
 	./$(TARGET)
 
+debug:
+	$(CC) $(SRC) $(CFLAGS) $(LIBS) \
+		-g -O0 -DDEBUG \
+		-fsanitize=address,undefined \
+		-fno-omit-frame-pointer \
+		-o $(TARGET)
+	./$(TARGET)
+
 clean:
 	rm -rf build

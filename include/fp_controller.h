@@ -2,6 +2,11 @@
 
 #include <raylib.h>
 
+#define MOVEMENT_ACCEL 60.0f
+#define MOVEMENT_DAMPING 6.0f
+
+#define CAM_FOV 45.0f
+
 typedef struct {
 	Camera3D cam;
 	Vector3 vel;

@@ -5,11 +5,6 @@
 #include <raymath.h>
 #include <stdio.h>
 
-#define MOVEMENT_ACCEL 60.0f
-#define MOVEMENT_DAMPING 6.0f
-
-#define CAM_FOV 45.0f
-
 static void fpc_move(FPController *fpc);
 static void fpc_rotate(FPController *fpc);
 
@@ -84,15 +79,15 @@ static void fpc_move_xz(FPController *fpc, float *dt) {
 
 static void fpc_move_y(FPController *fpc, float *dt) {
 	// Apply gravity
-	if (fpc->cam.position.y - fpc->hitbox.y > -0.5f) {  // -0.5f being floor height
+	if (fpc->cam.position.y - fpc->hitbox.y > 0) {  // -0 being floor height
 		fpc->vel.y -= fpc->gravity * *dt;
 	} else {
 		// Assume player grounded
 
 		fpc->vel.y = 0;
-		fpc->cam.position.y = -0.5f + fpc->hitbox.y;
+		fpc->cam.position.y = 0 + fpc->hitbox.y;
 
-		if (IsKeyDown(KEY_SPACE)) {
+		if (IsKeyPressed(KEY_SPACE)) {
 			fpc->vel.y = 6;
 		}
 	}
