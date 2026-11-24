@@ -32,7 +32,7 @@ void fp_controller_init(FPController *fpc) {
 	fpc->max_pitch = 89.0f * DEG2RAD;
 
 	fpc->hitbox = (Vector3){ 1, 2, 1 };
-	fpc->gravity = 9.8f;
+	fpc->gravity = 12.8f;
 
 	UpdateCamera(&fpc->cam, CAMERA_CUSTOM);
 }
@@ -53,7 +53,7 @@ static void fpc_move_xz(FPController *fpc, float *dt) {
 	// Update position
 	fpc->cam.position.x += fpc->vel.x * *dt;
 	fpc->cam.position.z += fpc->vel.z * *dt;
-	
+
 	Vector2 inp = {0};
 
 	if (IsKeyDown(KEY_W) || IsKeyDown(KEY_UP)) inp.y -= 1;
@@ -86,6 +86,7 @@ static void fpc_move_y(FPController *fpc, Map *map, float *dt) {
 	fpc->cam.position.y += fpc->vel.y * *dt;
 
 	char floor_height = get_map_height(fpc, map);
+	printf("%d\n", floor_height);
 
 	// Apply gravity
 	if (get_feet_height(fpc) > floor_height) {  // -0 being floor height
@@ -118,13 +119,16 @@ static void fpc_rotate(FPController *fpc) {
 	fpc->cam.target = Vector3Add(fpc->cam.position, forward);
 }
 
+// Get height of block player is standing on
 static char get_map_height(FPController *fpc, Map *map) {
-	// Get height of block player is standing on
 	int x = roundf(fpc->cam.position.x);
 	int z = roundf(fpc->cam.position.z);
 
+	if (x < 0 || z < 0) return 0;
+
 	// Assume a map data point is 1x1x1 block in game
 	size_t idx = z * map->map_row_size + x;
+
 	return map->data[idx];
 }
 
