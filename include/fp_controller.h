@@ -1,11 +1,13 @@
 #pragma once
 
+#include "map.h"
+
 #include <raylib.h>
 
 #define MOVEMENT_ACCEL 60.0f
 #define MOVEMENT_DAMPING 6.0f
 
-#define CAM_FOV 45.0f
+#define CAM_FOV 80.0f
 
 typedef struct {
 	Camera3D cam;
@@ -22,4 +24,4 @@ typedef struct {
 } FPController;
 
 void fp_controller_init(FPController *fpc);
-void fp_controller_update(FPController *fpc);
+void fp_controller_update(FPController *fpc, Map *map);

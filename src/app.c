@@ -41,7 +41,7 @@ void app_quit(App *a) {
 // In-app functions
 
 static void app_update(App *a) {
-	fp_controller_update(&a->fpc);
+	fp_controller_update(&a->fpc, a->map);
 }
 
 static void app_render(App *a) {

@@ -1,15 +1,19 @@
 #include "fp_controller.h"
+#include "map.h"
 
 #include <math.h>
 #include <raylib.h>
 #include <raymath.h>
 #include <stdio.h>
 
-static void fpc_move(FPController *fpc);
+static void fpc_move(FPController *fpc, Map *map);
 static void fpc_rotate(FPController *fpc);
 
 static void fpc_move_xz(FPController *fpc, float *dt);
-static void fpc_move_y(FPController *fpc, float *dt);
+static void fpc_move_y(FPController *fpc, Map *map, float *dt);
+
+static char get_map_height(FPController *fpc, Map *map);
+static inline float get_feet_height(FPController *fpc);
 
 void fp_controller_init(FPController *fpc) {
 	// Camera init
@@ -33,19 +37,23 @@ void fp_controller_init(FPController *fpc) {
 	UpdateCamera(&fpc->cam, CAMERA_CUSTOM);
 }
 
-void fp_controller_update(FPController *fpc) {
-	fpc_move(fpc);
+void fp_controller_update(FPController *fpc, Map *map) {
+	fpc_move(fpc, map);
 	fpc_rotate(fpc);
 }
 
-static void fpc_move(FPController *fpc) {
+static void fpc_move(FPController *fpc, Map *map) {
 	float dt = GetFrameTime();
 
 	fpc_move_xz(fpc, &dt);
-	fpc_move_y(fpc, &dt);
+	fpc_move_y(fpc, map, &dt);
 }
 
 static void fpc_move_xz(FPController *fpc, float *dt) {
+	// Update position
+	fpc->cam.position.x += fpc->vel.x * *dt;
+	fpc->cam.position.z += fpc->vel.z * *dt;
+	
 	Vector2 inp = {0};
 
 	if (IsKeyDown(KEY_W) || IsKeyDown(KEY_UP)) inp.y -= 1;
@@ -71,29 +79,27 @@ static void fpc_move_xz(FPController *fpc, float *dt) {
 	float decay = expf(-MOVEMENT_DAMPING * *dt);
 	fpc->vel.x *= decay;
 	fpc->vel.z *= decay;
-
-	// Update position
-	fpc->cam.position.x += fpc->vel.x * *dt;
-	fpc->cam.position.z += fpc->vel.z * *dt;
 }
 
-static void fpc_move_y(FPController *fpc, float *dt) {
+static void fpc_move_y(FPController *fpc, Map *map, float *dt) {
+	// Update position
+	fpc->cam.position.y += fpc->vel.y * *dt;
+
+	char floor_height = get_map_height(fpc, map);
+
 	// Apply gravity
-	if (fpc->cam.position.y - fpc->hitbox.y > 0) {  // -0 being floor height
+	if (get_feet_height(fpc) > floor_height) {  // -0 being floor height
 		fpc->vel.y -= fpc->gravity * *dt;
 	} else {
 		// Assume player grounded
 
 		fpc->vel.y = 0;
-		fpc->cam.position.y = 0 + fpc->hitbox.y;
+		fpc->cam.position.y = floor_height + fpc->hitbox.y;
 
 		if (IsKeyPressed(KEY_SPACE)) {
 			fpc->vel.y = 6;
 		}
 	}
-
-	// Update position
-	fpc->cam.position.y += fpc->vel.y * *dt;
 }
 
 static void fpc_rotate(FPController *fpc) {
@@ -110,4 +116,18 @@ static void fpc_rotate(FPController *fpc) {
 	forward = Vector3Normalize(forward);
 
 	fpc->cam.target = Vector3Add(fpc->cam.position, forward);
+}
+
+static char get_map_height(FPController *fpc, Map *map) {
+	// Get height of block player is standing on
+	int x = roundf(fpc->cam.position.x);
+	int z = roundf(fpc->cam.position.z);
+
+	// Assume a map data point is 1x1x1 block in game
+	size_t idx = z * map->map_row_size + x;
+	return map->data[idx];
+}
+
+static inline float get_feet_height(FPController *fpc) {
+	return fpc->cam.position.y - fpc->hitbox.y;
 }
