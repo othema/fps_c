@@ -17,7 +17,7 @@ static inline MapTile get_rel_tile(size_t map_size, MapTile *tiles, size_t x, si
 static inline MapTile tile_at(size_t map_size, MapTile *tiles, size_t x, size_t z);
 static void generate_buildings(Map *m, Assets *a);
 
-Map* mapgen(unsigned int seed, size_t size, Assets *a, uint8_t scale) {
+Map* mapgen(unsigned int seed, size_t size, Assets *a, float scale) {
 	Map *out = malloc(sizeof(Map));
 	if (out == NULL) {
 		fprintf(stderr, "Couldn't malloc map\n");

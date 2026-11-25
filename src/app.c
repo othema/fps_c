@@ -33,7 +33,7 @@ void app_init(App *a) {
 
 	DisableCursor();
 
-	map = mapgen(3, 32, &a->assets, 10);
+	map = mapgen(3, 32, &a->assets, MODEL_SCALE);
 }
 
 void app_run(App *a) {
@@ -62,8 +62,6 @@ static void app_render(App *a) {
 	ClearBackground(WHITE);
 
 	BeginMode3D(a->fpc.cam);
-
-	DrawGrid(2000, 1);
 
 	map_render((Vector3){ 0, 0, 0}, map, &a->assets);
 
