@@ -1,4 +1,5 @@
 #include "app.h"
+#include "assets.h"
 #include "fp_controller.h"
 
 #include "map/mapgen.h"
@@ -25,11 +26,14 @@ void app_init(App *a) {
 	InitWindow(WINDOW_W, WINDOW_H, "app");
 	SetTargetFPS(FPS);
 
+	// Load assets
+	assets_load(&a->assets);
+
 	fp_controller_init(&a->fpc);
 
 	DisableCursor();
 
-	map = mapgen(3, 32, 10);
+	map = mapgen(3, 32, &a->assets, 10);
 }
 
 void app_run(App *a) {
@@ -41,6 +45,7 @@ void app_run(App *a) {
 
 void app_quit(App *a) {
 	map_free(map);
+	assets_free(&a->assets);
 
 	CloseWindow();
 }
@@ -54,13 +59,13 @@ static void app_update(App *a) {
 static void app_render(App *a) {
 	BeginDrawing();
 
-	ClearBackground(WHITE);
+	ClearBackground(BLUE);
 
 	BeginMode3D(a->fpc.cam);
 
 	DrawGrid(2000, 1);
 
-	map_render((Vector3){ 0, 0, 0}, map);
+	map_render((Vector3){ 0, 0, 0}, map, &a->assets);
 
 	EndMode3D();
 

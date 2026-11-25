@@ -1,10 +1,10 @@
 #pragma once
 
-#include "map/assets.h"
-
 #include <raylib.h>
 #include <stdlib.h>
 #include <stdint.h>
+
+#include "assets.h"
 
 typedef enum {
 	TILE_EMPTY,
@@ -13,15 +13,13 @@ typedef enum {
 
 typedef struct {
 	Vector3 position;
-	MapAsset asset;
+	ModelID model;
 	int yaw;
 } MapStructure;
 
 typedef struct {
 	size_t size;
 	uint8_t scale;
-
-	MapAssets assets;
 
 	MapTile *tiles;
 	MapStructure *structures;

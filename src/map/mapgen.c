@@ -1,6 +1,7 @@
 #include "map/mapgen.h"
-#include "map/assets.h"
 #include "map/types.h"
+
+#include "assets.h"
 
 #include <raylib.h>
 #include <raymath.h>
@@ -11,12 +12,12 @@
 #include <sys/types.h>
 
 static MapTile* generate_layout(size_t size);
-static void generate_roads(Map *m);
-static inline MapTile get_rel_tile(size_t map_size, MapTile *tiles, int8_t x, int8_t z, int8_t dx, int8_t dz);
+static void generate_roads(Map *m, Assets *a);
+static inline MapTile get_rel_tile(size_t map_size, MapTile *tiles, size_t x, size_t z, size_t dx, size_t dz);
 static inline MapTile tile_at(size_t map_size, MapTile *tiles, size_t x, size_t z);
-static void generate_buildings(Map *m);
+static void generate_buildings(Map *m, Assets *a);
 
-Map* mapgen(unsigned int seed, size_t size, uint8_t scale) {
+Map* mapgen(unsigned int seed, size_t size, Assets *a, uint8_t scale) {
 	Map *out = malloc(sizeof(Map));
 	if (out == NULL) {
 		fprintf(stderr, "Couldn't malloc map\n");
@@ -40,31 +41,29 @@ Map* mapgen(unsigned int seed, size_t size, uint8_t scale) {
 	out->n_structures = 0;
 
 	// Using the layout, generate the road structs
-	generate_roads(out);
+	generate_roads(out, a);
 
 	// Generate buildings
-	generate_buildings(out);
-
-	// Load assets
-	map_load_assets(&out->assets);
+	generate_buildings(out, a);
 
 	return out;
 }
 
-static void generate_buildings(Map *m) {
+static void generate_buildings(Map *m, Assets *a) {
 	for (size_t z = 0; z < m->size; z++)
 	for (size_t x = 0; x < m->size; x++)
 	{
 		if (tile_at(m->size, m->tiles, x, z) == TILE_EMPTY) {
 			m->structures[m->n_structures].position = (Vector3){ x * m->scale, 0, z * m->scale };
-			m->structures[m->n_structures].asset = ASSET_BUILDING_1;
+			m->structures[m->n_structures].model = assets_pick(a, POOL_BUILDING, rand());
+			m->structures[m->n_structures].yaw = 0;
 			m->n_structures++;
 		}
 	}
 }
 
 // Parse the tile map and translate all roads to MapStructure structs
-static void generate_roads(Map *m) {
+static void generate_roads(Map *m, Assets *a) {
 	for (size_t z = 0; z < m->size; z++) {
 		for (size_t x = 0; x < m->size; x++) {
 			if (tile_at(m->size, m->tiles, x, z) == TILE_ROAD) {
@@ -87,7 +86,7 @@ static void generate_roads(Map *m) {
 				// Rotate road model
 				switch (connections) {
 				case 1:  // Dead-end road
-					road->asset = ASSET_ROAD_END;
+					road->model = assets_pick(a, POOL_ROAD_END, 0);
 
 					if (adj[0]) road->yaw = 270;  // Right
 					if (adj[1]) road->yaw = 90;   // Left
@@ -95,14 +94,13 @@ static void generate_roads(Map *m) {
 					if (adj[3]) road->yaw = 180;  // Down
 					break;
 				case 2:  // 2-way connected road
+					road->model = assets_pick(a, POOL_ROAD_STRAIGHT, 0);
 					if (adj[0] && adj[1]) {
-						road->asset = ASSET_ROAD_STRAIGHT;
 						road->yaw = 90;   // Right && Left
 					} else if (adj[2] && adj[3]) {
-						road->asset = ASSET_ROAD_STRAIGHT;
 						road->yaw = 0;    // Up && Down
 					} else {
-						road->asset = ASSET_ROAD_BEND;
+						road->model = assets_pick(a, POOL_ROAD_BEND, 0);
 						if (adj[0] && adj[2]) road->yaw = 90;       // +Z and +X
 						else if (adj[2] && adj[1]) road->yaw = 180; // +X and -Z
 						else if (adj[1] && adj[3]) road->yaw = 270; // -Z and -X
@@ -110,7 +108,7 @@ static void generate_roads(Map *m) {
 					}
 					break;
 				case 3:  // 3-way intersection
-					road->asset = ASSET_ROAD_INTERSECTION;
+					road->model = assets_pick(a, POOL_ROAD_INTERSECTION, 0);
 
 					if (adj[0] && adj[1]) {  // Right && Left
 						if (adj[2]) road->yaw = 90;    // Facing up
@@ -121,7 +119,7 @@ static void generate_roads(Map *m) {
 					}
 					break;
 				case 4:  // Crossroads
-					road->asset = ASSET_ROAD_CROSSROADS;
+					road->model = assets_pick(a, POOL_ROAD_CROSSROADS, 0);
 					road->yaw = 0;
 					break;
 				default:
@@ -135,7 +133,7 @@ static void generate_roads(Map *m) {
 	}
 }
 
-static inline MapTile get_rel_tile(size_t map_size, MapTile *tiles, int8_t x, int8_t z, int8_t dx, int8_t dz) {
+static inline MapTile get_rel_tile(size_t map_size, MapTile *tiles, size_t x, size_t z, size_t dx, size_t dz) {
 	x += dx;
 	z += dz;
 
@@ -186,7 +184,6 @@ void map_free(Map *map) {
 	free(map->tiles);
 	free(map->structures);
 
-	map_free_assets(&map->assets);
 	free(map);
 }
 
