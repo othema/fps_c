@@ -12,8 +12,8 @@ typedef struct { const char *path; AssetPoolID pool; TextureID texture; } ModelD
 typedef struct { const char *path; } TextureDescriptor;
 
 static const TextureDescriptor TEXTURE_DESCRIPTORS[] = {
-	[TEXTURE_ROAD] = { "assets/kenney_roads/Models/GLB format/Textures/colormap.png" },
-	[TEXTURE_BUILDING] = { "assets/kenney_city/Models/GLB format/Textures/colormap.png" }
+	[TEXTURE_ROAD] = { "assets/kenney_roads/Models/GLB format/Textures/variation-a.png" },
+	[TEXTURE_BUILDING] = { "assets/kenney_city/Models/GLB format/Textures/variation-b.png" }
 };
 
 static const ModelDescriptor MODEL_DESCRIPTORS[] = {
@@ -71,8 +71,9 @@ bool assets_load(Assets *a) {
 	for (size_t i = 0; i < a->n_models; i++) {
 		a->models[i] = LoadModel(MODEL_DESCRIPTORS[i].path);
 
-		if (a->models[i].materialCount > 0)
-			SetMaterialTexture(&a->models[i].materials[0], MATERIAL_MAP_ALBEDO, a->textures[MODEL_DESCRIPTORS[i].texture]);
+		if (a->models[i].materialCount > 0) {
+			SetMaterialTexture(&a->models[i].materials[1], MATERIAL_MAP_ALBEDO, a->textures[MODEL_DESCRIPTORS[i].texture]);
+		}
 	}
 
 	/* Asset pooling */
