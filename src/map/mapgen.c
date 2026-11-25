@@ -64,19 +64,34 @@ static size_t generate_roads(MapRoad out[MAX_ROADS], MapTile tiles[MAP_SIZE][MAP
 				if (adj[i]) out[n].connections++;
 			}
 
+			// Rotate rote model
 			switch (out[n].connections) {
-			case 1:
+			case 1:  // Dead-end road
+				out[n].asset = ASSET_ROAD_END;
+
 				if (adj[0]) out[n].yaw = 270;  // Right
 				if (adj[1]) out[n].yaw = 90;  // Left
 				if (adj[2]) out[n].yaw = 0;  // Up
 				if (adj[3]) out[n].yaw = 180;  // Down
 				break;
-			case 2:
+			case 2:  // 2-way connect road
+				// Straight roads
+				out[n].asset = ASSET_ROAD_STRAIGHT;
 				if (adj[0] && adj[1]) out[n].yaw = 90;  // Right && Left
 				else if (adj[2] && adj[3]) out[n].yaw = 0;  // Up && Down
-				else NULL;  // TODO: Bends
+				
+				else {
+					out[n].asset = ASSET_ROAD_BEND;
+					if (adj[0] && adj[2]) out[n].yaw = 90;       // +Z and +X
+					else if (adj[2] && adj[1]) out[n].yaw = 180;   // +X and -Z
+					else if (adj[1] && adj[3]) out[n].yaw = 270;  // -Z and -X
+					else if (adj[3] && adj[0]) out[n].yaw = 0; // -X and +Z
+				}
+
 				break;
-			case 3:
+			case 3:  // 3-way intersection
+				out[n].asset = ASSET_ROAD_INTERSECTION;
+
 				if (adj[0] && adj[1]) {  // Right && Left
 					if (adj[2]) out[n].yaw = 90;  // Facing up
 					else out[n].yaw = 270;  // Facing down
@@ -85,6 +100,9 @@ static size_t generate_roads(MapRoad out[MAX_ROADS], MapTile tiles[MAP_SIZE][MAP
 					else out[n].yaw = 180;
 				}
 				break;
+			case 4:
+				// Crossroads require no rotation
+				out[n].asset = ASSET_ROAD_CROSSROADS;
 			default: break;
 			}
 

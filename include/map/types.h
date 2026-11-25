@@ -15,6 +15,8 @@ typedef enum {
 typedef struct MapRoad {
 	Vector3 position;
 
+	MapAsset asset;
+
 	uint8_t connections;
 	int yaw;
 } MapRoad;
