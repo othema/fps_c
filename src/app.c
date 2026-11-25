@@ -33,7 +33,7 @@ void app_init(App *a) {
 
 	DisableCursor();
 
-	map = mapgen(3, 32, &a->assets, 10);
+	map = mapgen(3, 32, &a->assets, 1);
 }
 
 void app_run(App *a) {
@@ -59,7 +59,7 @@ static void app_update(App *a) {
 static void app_render(App *a) {
 	BeginDrawing();
 
-	ClearBackground(BLUE);
+	ClearBackground(WHITE);
 
 	BeginMode3D(a->fpc.cam);
 

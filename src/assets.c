@@ -32,7 +32,12 @@ static const ModelDescriptor MODEL_DESCRIPTORS[] = {
 	{ "assets/kenney_city/Models/GLB format/building-e.glb", POOL_BUILDING, TEXTURE_BUILDING },
 	{ "assets/kenney_city/Models/GLB format/building-f.glb", POOL_BUILDING, TEXTURE_BUILDING },
 	{ "assets/kenney_city/Models/GLB format/building-g.glb", POOL_BUILDING, TEXTURE_BUILDING },
-	{ "assets/kenney_city/Models/GLB format/building-h.glb", POOL_BUILDING, TEXTURE_BUILDING }
+	{ "assets/kenney_city/Models/GLB format/building-h.glb", POOL_BUILDING, TEXTURE_BUILDING },
+	{ "assets/kenney_city/Models/GLB format/building-skyscraper-a.glb", POOL_BUILDING, TEXTURE_BUILDING },
+	{ "assets/kenney_city/Models/GLB format/building-skyscraper-b.glb", POOL_BUILDING, TEXTURE_BUILDING },
+	{ "assets/kenney_city/Models/GLB format/building-skyscraper-c.glb", POOL_BUILDING, TEXTURE_BUILDING },
+	{ "assets/kenney_city/Models/GLB format/building-skyscraper-d.glb", POOL_BUILDING, TEXTURE_BUILDING },
+	{ "assets/kenney_city/Models/GLB format/building-skyscraper-e.glb", POOL_BUILDING, TEXTURE_BUILDING }
 };
 
 bool assets_load(Assets *a) {
