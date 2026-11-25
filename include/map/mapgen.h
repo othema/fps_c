@@ -6,5 +6,5 @@
 #include <stdlib.h>
 #include <stdint.h>
 
-Map* mapgen(unsigned int seed, uint8_t scale);
+Map* mapgen(unsigned int seed, size_t size, uint8_t scale);
 void map_free(Map *map);

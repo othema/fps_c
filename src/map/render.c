@@ -6,16 +6,27 @@
 #include <raylib.h>
 
 void map_render(Vector3 origin, Map *map) {
-	for (size_t i = 0; i < map->roads_n; i++) {
-		MapRoad *r = &map->roads[i];
+	// Render roads
+	for (size_t i = 0; i < map->n_structures; i++) {
+		MapStructure *r = &map->structures[i];
 
 		DrawModelEx(
 			*map_get_asset(&map->assets, r->asset),
-			map->roads[i].position,
-			(Vector3){ 0, map->roads[i].yaw, 0 },
-			map->roads[i].yaw,
+			map->structures[i].position,
+			(Vector3){ 0, map->structures[i].yaw, 0 },
+			map->structures[i].yaw,
 			(Vector3){ map->scale, map->scale, map->scale },
 			WHITE
 		);
 	}
+
+	// // Render buildings
+	// DrawModelEx(
+	// 	*map_get_asset(&map->assets, ASSET_BUILDING_1),
+	// 	(Vector3){ 0, 0, 0 },
+	// 	(Vector3){ 0, 0, 0 },
+	// 	0,
+	// 	(Vector3){ map->scale, map->scale, map->scale },
+	// 	WHITE
+	// );
 }

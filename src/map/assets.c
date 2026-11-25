@@ -6,6 +6,7 @@
 static Model load(const char *model_path, Texture2D *tex);
 
 void map_load_assets(MapAssets *assets) {
+	// Road tiles
 	assets->textures[MODEL_TEXTURE_ROAD] = LoadTexture("assets/kenney_roads/Models/GLB format/Textures/colormap.png");
 
 	assets->models[ASSET_ROAD_STRAIGHT] = load("assets/kenney_roads/Models/GLB format/road-straight.glb", &assets->textures[MODEL_TEXTURE_ROAD]);
@@ -13,6 +14,15 @@ void map_load_assets(MapAssets *assets) {
 	assets->models[ASSET_ROAD_INTERSECTION] = load("assets/kenney_roads/Models/GLB format/road-intersection.glb", &assets->textures[MODEL_TEXTURE_ROAD]);
 	assets->models[ASSET_ROAD_CROSSROADS] = load("assets/kenney_roads/Models/GLB format/road-crossroad.glb", &assets->textures[MODEL_TEXTURE_ROAD]);
 	assets->models[ASSET_ROAD_END] = load("assets/kenney_roads/Models/GLB format/road-end.glb", &assets->textures[MODEL_TEXTURE_ROAD]);
+
+	// Buildings
+	assets->textures[MODEL_TEXTURE_BUILDING] = LoadTexture("assets/kenney_city/Models/GLB format/Textures/colormap.png");
+
+	assets->models[ASSET_BUILDING_1] = load("assets/kenney_city/Models/GLB format/building-a.glb", &assets->textures[MODEL_TEXTURE_BUILDING]);
+	assets->models[ASSET_BUILDING_2] = load("assets/kenney_city/Models/GLB format/building-b.glb", &assets->textures[MODEL_TEXTURE_BUILDING]);
+	assets->models[ASSET_BUILDING_3] = load("assets/kenney_city/Models/GLB format/building-c.glb", &assets->textures[MODEL_TEXTURE_BUILDING]);
+	assets->models[ASSET_BUILDING_4] = load("assets/kenney_city/Models/GLB format/building-d.glb", &assets->textures[MODEL_TEXTURE_BUILDING]);
+	assets->models[ASSET_BUILDING_5] = load("assets/kenney_city/Models/GLB format/building-e.glb", &assets->textures[MODEL_TEXTURE_BUILDING]);
 }
 
 void map_free_assets(MapAssets *assets) {

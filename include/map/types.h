@@ -1,6 +1,5 @@
 #pragma once
 
-#include "map/constants.h"
 #include "map/assets.h"
 
 #include <raylib.h>
@@ -12,22 +11,19 @@ typedef enum {
 	TILE_ROAD
 } MapTile;
 
-typedef struct MapRoad {
+typedef struct {
 	Vector3 position;
-
 	MapAsset asset;
-
-	uint8_t connections;
 	int yaw;
-} MapRoad;
+} MapStructure;
 
 typedef struct {
-	MapTile tiles[MAP_SIZE][MAP_SIZE];
-
-	MapRoad roads[MAX_ROADS];
-	size_t roads_n;
+	size_t size;
+	uint8_t scale;
 
 	MapAssets assets;
 
-	uint8_t scale;
+	MapTile *tiles;
+	MapStructure *structures;
+	size_t n_structures;
 } Map;
