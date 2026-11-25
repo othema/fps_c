@@ -29,7 +29,7 @@ void app_init(App *a) {
 
 	DisableCursor();
 
-	map = mapgen(30, 1);
+	map = mapgen(3, 1);
 }
 
 void app_run(App *a) {

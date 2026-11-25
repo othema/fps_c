@@ -14,12 +14,13 @@ typedef enum {
 
 typedef struct MapRoad {
 	Vector3 position;
-	unsigned char connections;
+
+	uint8_t connections;
 	int yaw;
 } MapRoad;
 
 typedef struct {
-	unsigned char tiles[MAP_SIZE][MAP_SIZE];
+	MapTile tiles[MAP_SIZE][MAP_SIZE];
 
 	MapRoad roads[MAX_ROADS];
 	size_t roads_n;

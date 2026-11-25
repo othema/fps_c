@@ -2,14 +2,15 @@
 
 #include <raylib.h>
 
-#define N_MODELS 4
+#define N_MODELS 5
 #define N_TEXTURES 1
 
 typedef enum {
 	ASSET_ROAD_STRAIGHT,
 	ASSET_ROAD_BEND,
 	ASSET_ROAD_INTERSECTION,
-	ASSET_ROAD_CROSSROADS
+	ASSET_ROAD_CROSSROADS,
+	ASSET_ROAD_END
 } MapAsset;
 
 enum {

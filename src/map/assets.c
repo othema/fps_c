@@ -12,6 +12,7 @@ void map_load_assets(MapAssets *assets) {
 	assets->models[ASSET_ROAD_BEND] = load("assets/kenney_roads/Models/GLB format/road-bend.glb", &assets->textures[MODEL_TEXTURE_ROAD]);
 	assets->models[ASSET_ROAD_INTERSECTION] = load("assets/kenney_roads/Models/GLB format/road-intersection.glb", &assets->textures[MODEL_TEXTURE_ROAD]);
 	assets->models[ASSET_ROAD_CROSSROADS] = load("assets/kenney_roads/Models/GLB format/road-crossroad.glb", &assets->textures[MODEL_TEXTURE_ROAD]);
+	assets->models[ASSET_ROAD_END] = load("assets/kenney_roads/Models/GLB format/road-end.glb", &assets->textures[MODEL_TEXTURE_ROAD]);
 }
 
 void map_free_assets(MapAssets *assets) {
